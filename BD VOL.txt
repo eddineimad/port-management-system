@@ -1,0 +1,210 @@
+mysql> create database bd_vol ;
+Query OK, 1 row affected (0.03 sec)
+mysql> use bd_vol;
+Database changed
+mysql> create table avion(
+    -> id_avion int primary key ,
+    -> Nom varchar(20) ,
+    -> Capacite int );
+Query OK, 0 rows affected (0.09 sec)
+mysql> desc avion ;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| id_avion | int         | NO   | PRI | NULL    |       |
+| Nom      | varchar(20) | YES  |     | NULL    |       |
+| Capacite | int         | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.04 sec)
+
+mysql> create table pilote(
+    -> id_pilote int primary key ,
+    -> Nom_pil varchar(10) ,
+    -> adresse varchar(30) );
+Query OK, 0 rows affected (0.09 sec)
+mysql> create table vol(
+    -> id_vol int primary key ,
+    -> FOREIGN KEY (id_avion) REFERENCES avion(id_avion),
+    -> FOREIGN KEY (id_pilote) REFERENCES pilote(id_avion),
+    -> ville_dep varchar(10)
+    -> , ville_Arriv varchar(10),
+    -> HeuresDep date ,
+    -> HeuresArriv date );
+ERROR 1072 (42000): Key column 'id_avion' doesn't exist in table
+mysql> create table vol(
+    -> id_vol int primary key ,
+    -> FOREIGN KEY (id_avion) REFERENCES avion(id_avion),
+    -> FOREIGN KEY (id_pilote) REFERENCES pilote(id_avion),
+    -> ville_dep varchar(10),
+    -> ville_Arriv varchar(10),)
+    -> HeuresDep date ,
+    -> HeuresArriv date );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')
+HeuresDep date ,
+HeuresArriv date )' at line 6
+mysql> create table vol(
+    -> id_vol int primary key ,
+    -> FOREIGN KEY (id_avion) REFERENCES avion(id_avion),
+    -> FOREIGN KEY (id_pilote) REFERENCES pilote(id_avion),
+    -> ville_dep varchar(10),
+    -> ville_Arriv varchar(10),
+    -> HeuresDep date ,
+    -> HeuresArriv date );
+ERROR 1072 (42000): Key column 'id_avion' doesn't exist in table
+mysql> create table vol(
+    -> id_vol int primary key ,
+    -> ville_dep varchar(10),
+    -> ville_Arriv varchar(10),
+    -> HeuresDep date ,
+    -> HeuresArriv date );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc vol;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| id_vol      | int         | NO   | PRI | NULL    |       |
+| ville_dep   | varchar(10) | YES  |     | NULL    |       |
+| ville_Arriv | varchar(10) | YES  |     | NULL    |       |
+| HeuresDep   | date        | YES  |     | NULL    |       |
+| HeuresArriv | date        | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> alter table vol
+    -> add foreign key (id_avion) references avion(id_avion);
+ERROR 1072 (42000): Key column 'id_avion' doesn't exist in table
+mysql> alter table avion
+    -> add localite varchar(10);
+Query OK, 0 rows affected (0.07 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc avion;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| id_avion | int         | NO   | PRI | NULL    |       |
+| Nom      | varchar(20) | YES  |     | NULL    |       |
+| Capacite | int         | YES  |     | NULL    |       |
+| localite | varchar(10) | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert into avion
+    -> values(100,AIRBUS,300,RABAT),
+    -> (101 ,B737,250,CASA),
+    -> (102 ,B737,220,RABAT);
+ERROR 1054 (42S22): Unknown column 'AIRBUS' in 'field list'
+mysql> insert into avion
+    -> values(100,'AIRBUS',300,'RABAT'),
+    -> (101 ,'B737',250,'CASA'),
+    -> (102 ,'B737',220,'RABAT');
+Query OK, 3 rows affected (0.05 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM AVION;
++----------+--------+----------+----------+
+| id_avion | Nom    | Capacite | localite |
++----------+--------+----------+----------+
+|      100 | AIRBUS |      300 | RABAT    |
+|      101 | B737   |      250 | CASA     |
+|      102 | B737   |      220 | RABAT    |
++----------+--------+----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT Nom, Capacite from avion;
++--------+----------+
+| Nom    | Capacite |
++--------+----------+
+| AIRBUS |      300 |
+| B737   |      250 |
+| B737   |      220 |
++--------+----------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT localite
+    -> from avion;
++----------+
+| localite |
++----------+
+| RABAT    |
+| CASA     |
++----------+
+2 rows in set (0.00 sec)
+
+mysql> ALTER TABLE avion
+    -> modify column Capacite;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 2
+mysql> update avion
+    -> set Capacite= 220
+    -> where id_avion = 101;
+Query OK, 1 row affected (0.06 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT MIN(Capacite)
+    -> from avion;
++---------------+
+| MIN(Capacite) |
++---------------+
+|           220 |
++---------------+
+1 row in set (0.05 sec)
+
+mysql> SELECT Max(Capacite)
+    -> from avion;
++---------------+
+| Max(Capacite) |
++---------------+
+|           300 |
++---------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT avg(Capacite)
+    -> from avion;
++---------------+
+| avg(Capacite) |
++---------------+
+|      246.6667 |
++---------------+
+1 row in set (0.05 sec)
+
+mysql> select * from avion
+    -> where Capacite = 220;
++----------+------+----------+----------+
+| id_avion | Nom  | Capacite | localite |
++----------+------+----------+----------+
+|      101 | B737 |      220 | CASA     |
+|      102 | B737 |      220 | RABAT    |
++----------+------+----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from avion
+    -> where Capacite = 300;
++----------+--------+----------+----------+
+| id_avion | Nom    | Capacite | localite |
++----------+--------+----------+----------+
+|      100 | AIRBUS |      300 | RABAT    |
++----------+--------+----------+----------+
+1 row in set (0.00 sec)
+
+mysql> select * from avion
+    -> where Capacite = 246.6667;
+Empty set (0.00 sec)
+
+mysql> insert into pilote
+    -> values(6500,'hamza','marrakech'),
+    -> (1299 ,'aymane',tanger_hay),
+    -> (7800 ,'haytam',agadir_hay);
+ERROR 1054 (42S22): Unknown column 'tanger_hay' in 'field list'
+mysql> values(6500,'hamza','marrakech'),
+    -> (1299 ,'aymane','tanger_hay'),
+    -> (7800 ,'haytam','agadir_hay');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '(6500,'hamza','marrakech'),
+(1299 ,'aymane','tanger_hay'),
+(7800 ,'haytam','agad' at line 1
+mysql> insert into pilote
+    -> values(6500,'hamza','marrakech'),
+    -> (1299 ,'aymane','tanger_hay'),
+    -> (7800 ,'haytam','agadir_hay');
+Query OK, 3 rows affected (0.05 sec)
+Records: 3  Duplicates: 0  Warnings: 0
